@@ -1,0 +1,8 @@
+{
+  "presets": [
+    "react"
+  ],
+  "plugins": [
+    "s66yntax-dynamic-imsdport"
+  ]
+}

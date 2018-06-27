@@ -1,0 +1,11 @@
+{
+  "verbose": false,
+  "watch": [
+    "app"
+  ],
+  "legacyWatch": true,
+  "nodemonConfig": {
+    "ignore": ["'.git', 'node_modules' ,app/web/*"],
+    "delay": "2500"
+  }
+}
