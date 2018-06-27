@@ -11,7 +11,8 @@
 > * [x] 使用最新的react v.16.4
 
 ---
-> * [x] webpack 没有升级到最新（目前是3.8）。由于一些webpack插件原因，导致只能回退。刚开始配置是最新的webpack，但是babel-plugin-import 引入antd 的时候，有部分组件不能正常使用。
+
+>  webpack 没有升级到最新（目前是3.8）。由于一些webpack插件原因，导致只能回退。刚开始配置是最新的webpack，但是babel-plugin-import 引入antd 的时候，有部分组件不能正常使用。
 
 
 ## 服务端渲染实现
@@ -88,21 +89,23 @@ render(
 
 ```
 
+---
 
-> * 1..redux方面，先创建新的 Redux store 实例，将我们需要初始的state合并到 store
-> * 2.通过 store.getState() 获取最终的finalState
-> * 3.通过 StaticRouter 可以获取路径匹配的页面组件，并通过 ReactDOMServer.renderToString 转化为HTML元素
-    ssr.tsx 主要做了两件事：1.将初始的 store 注入redux 2.返回带有 store 数据的路径匹配的页面组件，也就是说这个页面已经是有初始数据了
+> #### 1..redux方面，先创建新的 Redux store 实例，将我们需要初始的state合并到 store
+> #### 2.通过 store.getState() 获取最终的finalState
+> #### 3.通过 StaticRouter 可以获取路径匹配的页面组件，并通过 ReactDOMServer.renderToString 转化为HTML元素
+    ssr.tsx 主要做了两件事：1.将初始的 store 注入redux 2.返回带有 store 数据的路径匹配的页面组件，
+    也就是说这个页面已经是有初始数据了
 
-> * 4.将读取的html模板注入数据，在这里我们需要通过简单的正则替换一下
+> #### 4.将读取的html模板注入数据，在这里我们需要通过简单的正则替换一下
     在 <div id="root"></div> 中插入我们的html元素
     在 <div id="root"></div> 后面插入 `<script> window.__INITIAL_STATE__ = ${JSON.stringify(finalState)}</script>`
-> * 5.将这个页面发送出去
-> * 6.js加载的时候会读取 `window.__INITIAL_STATE__` 的数据，合并到 store
+> #### 5.将这个页面发送出去
+> #### 6.js加载的时候会读取 `window.__INITIAL_STATE__` 的数据，合并到 store
 
 
 
-注意：这里 我们是用 fs模块 读取 html模板，而不是直接使用 类似以下函数
+### 注意：这里 我们是用 fs模块 读取 html模板，而不是直接使用 类似以下函数
 
 ```
 export default (html, finalState)=>(
@@ -128,4 +131,24 @@ export default (html, finalState)=>(
 )
 ```
 
-原因主要是因为打包得到的 js、css 需要有hash值来管理版本缓存，所以是不能直接写死的
+### 原因主要是因为打包得到的 js、css 需要有hash值来管理版本缓存，所以是不能直接写死的
+
+
+--- 
+
+## 怎么使用
+
+> git clone git@github.com:m-Ryan/typescript-koa-ssr-react-boilerplate.git
+> cd typescript-koa-ssr-react-boilerplate 
+
+## 后台
+> * 首次使用，先 npm install
+> * 开发环境 npm start
+> * 生产环境 npm run build 
+
+## 前端
+> * cd app/web 首次使用，先 npm install
+> * 开发环境 npm start
+> * 生产环境 npm run build 
+
+## 考虑到前后端分离，这里没有使用 webpack-middleware
