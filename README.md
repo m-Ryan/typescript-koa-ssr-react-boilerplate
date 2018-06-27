@@ -94,8 +94,9 @@ render(
 > #### 1..redux方面，先创建新的 Redux store 实例，将我们需要初始的state合并到 store
 > #### 2.通过 store.getState() 获取最终的finalState
 > #### 3.通过 StaticRouter 可以获取路径匹配的页面组件，并通过 ReactDOMServer.renderToString 转化为HTML元素
-    ssr.tsx 主要做了两件事：1.将初始的 store 注入redux 2.返回带有 store 数据的路径匹配的页面组件，
-    也就是说这个页面已经是有初始数据了
+    ssr.tsx 主要做了两件事：
+    1.将初始的 store 注入redux 
+    2.返回带有 store 数据的路径匹配的页面组件，也就是说这个页面已经是有初始数据了
 
 > #### 4.将读取的html模板注入数据，在这里我们需要通过简单的正则替换一下
     在 <div id="root"></div> 中插入我们的html元素
@@ -151,4 +152,5 @@ export default (html, finalState)=>(
 > * 开发环境 npm start
 > * 生产环境 npm run build 
 
-## 考虑到前后端分离，这里没有使用 webpack-middleware
+### 考虑到前后端分离，这里没有使用 webpack-middleware
+### 打算在之后的项目中使用，但目前还没开始。不确定有没有bug，仅供参考
