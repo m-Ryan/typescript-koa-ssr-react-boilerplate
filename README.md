@@ -2,6 +2,44 @@
 
 ## typescript版的前后端开发脚手架
 
+### 虽然这是最常见的做法，但不再推荐这种做法，非常的不优雅。提供一个思路
+- 1.服务端模拟浏览器环境，直接在服务端调用 ReactDOMServer.render 渲染组件收集状态
+- 2.将收集的状态重新注入回组件，调用 renderToStaticMarkup 获取渲染内容
+- 类似
+    ```js
+    axiosInstance.defaults.baseURL = `http://localhost:${SERVER_PORT}`;
+    const { store } = createStore(modelsMap, initProps);
+    // 收集依赖数据
+    const initComponent = getApp(url, {
+        store,
+    });
+
+    render(initComponent, document.createElement('div'));
+    await store.awaitSSR(10000);
+    const injectProps = JSON.stringify(store.getState());
+    // 渲染注入数据的组件
+    const component = getApp(url, {
+        store,
+    });
+
+    const renderContent = ReactDOMServer.renderToStaticMarkup(component);
+    const htmlTemplete = await getHtmlTemplete();
+
+    // 注入内容
+    const renderHtml = injectTemplete(htmlTemplete, {
+        'SSR_THEME_CSS': store.getState().themeColor.currentStyle,
+        'SSR_INJECT_PROPS': `window.__INITIAL_STATE__ = ${injectProps}`,
+        'SSR_DOCUMENT_TITLE': document.title,
+        'SSR_META_DESCRIPTION': window.__META_DESCRIPTION__,
+        'SSR_RENDER_CONTENT': renderContent
+    });
+    console.log(`renderFullPage end. time：${(dayjs().unix() - beginTime)}ms`);
+    return renderHtml;
+```
+
+完整的SSR项目 [https://github.com/m-Ryan/RyanCMS](https://github.com/m-Ryan/RyanCMS)
+
+
 ## 特色
 > * [x] 前后端分离
 > * [x] typeScript
@@ -95,7 +133,7 @@ render(
 > #### 2.通过 store.getState() 获取最终的finalState
 > #### 3.通过 StaticRouter 可以获取路径匹配的页面组件，并通过 ReactDOMServer.renderToString 转化为HTML元素
     ssr.tsx 主要做了两件事：
-    1.将初始的 store 注入redux 
+    1.将初始的 store 注入redux
     2.返回带有 store 数据的路径匹配的页面组件，也就是说这个页面已经是有初始数据了
 
 > #### 4.将读取的html模板注入数据，在这里我们需要通过简单的正则替换一下
@@ -135,22 +173,22 @@ export default (html, finalState)=>(
 ### 原因主要是因为打包得到的 js、css 需要有hash值来管理版本缓存，所以是不能直接写死的
 
 
---- 
+---
 
 ## 怎么使用
 
 > git clone git@github.com:m-Ryan/typescript-koa-ssr-react-boilerplate.git
-> cd typescript-koa-ssr-react-boilerplate 
+> cd typescript-koa-ssr-react-boilerplate
 
 ## 后台
 > * 首次使用，先 npm install
 > * 开发环境 npm start
-> * 生产环境 npm run build 
+> * 生产环境 npm run build
 
 ## 前端
 > * cd app/web 首次使用，先 npm install
 > * 开发环境 npm start
-> * 生产环境 npm run build 
+> * 生产环境 npm run build
 
 ### 考虑到前后端分离，这里没有使用 webpack-middleware
 ### 打算在之后的项目中使用，但目前还没开始。不确定有没有bug，仅供参考
